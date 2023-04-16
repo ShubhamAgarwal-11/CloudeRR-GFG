@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const server = require('http').Server(app);
 const io= require('socket.io')(server);
-const {v4:uuidV4} = require('uuid');
+// const {v4:uuidV4} = require('uuid');
 const expressLayouts = require('express-ejs-layouts');
 const db = require('./config/mongoose');
 // used for session cookie
@@ -27,7 +27,7 @@ app.use(express.static('public'))
 app.use(express.urlencoded());
 app.use(cookieParser());
 
-// app.use(express.static('./assets'));
+app.use(express.static('./assets'));
 
 app.use(expressLayouts);
 
@@ -67,26 +67,26 @@ app.use(flash());
 app.use(customMware.setFlash);
 
 // use express router
-// app.use('/',require('./routes'));
+app.use('/',require('./routes'));
 
-app.get('/', (req, res) => {
-    res.redirect(`/${uuidV4()}`)
-  });
+// app.get('/', (req, res) => {
+//     res.redirect(`/${uuidV4()}`)
+//   });
 
- app.get('/:room', (req, res) => {
-    res.render('room', { roomId: req.params.room })
-  });
+//  app.get('/:room', (req, res) => {
+//     res.render('room', { roomId: req.params.room })
+//   });
 
-  io.on('connection', socket => {
-    socket.on('join-room', (roomId, userId) => {
-      socket.join(roomId)
-      socket.to(roomId).broadcast.emit('user-connected', userId)
+  // io.on('connection', socket => {
+  //   socket.on('join-room', (roomId, userId) => {
+  //     socket.join(roomId)
+  //     socket.to(roomId).broadcast.emit('user-connected', userId)
   
-      socket.on('disconnect', () => {
-        socket.to(roomId).broadcast.emit('user-disconnected', userId)
-      })
-    })
-  })
+  //     socket.on('disconnect', () => {
+  //       socket.to(roomId).broadcast.emit('user-disconnected', userId)
+  //     })
+  //   })
+  // })
 
 app.listen(port,function(err){
     if(err){
